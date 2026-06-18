@@ -66,9 +66,9 @@
     .topbar-search {
       margin-left: auto; position: relative; width: 280px; flex-shrink: 0;
     }
-    .topbar-search svg {
-      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-      color: var(--text-3); pointer-events: none;
+    .topbar-search > svg {
+      position: absolute; left: 12px; top: 19px;
+      color: var(--text-3); pointer-events: none; z-index: 1;
     }
     #searchInput {
       width: 100%; height: 38px;
@@ -78,6 +78,50 @@
     }
     #searchInput::placeholder { color: var(--text-3); }
     #searchInput:focus { border-color: rgba(99,102,241,.5); background: var(--card); }
+
+    /* ── Suggestion dropdown ── */
+    .suggestion-box {
+      position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 300;
+      background: var(--surface); border: 1px solid var(--border-hover);
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 20px 48px -8px rgba(0,0,0,.7);
+      display: none;
+    }
+    .suggestion-box.visible { display: block; }
+
+    .sg-group-label {
+      font-size: .62rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+      color: var(--text-3); padding: 10px 14px 4px;
+    }
+    .sg-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 14px; cursor: pointer;
+      transition: background .12s; border: none; width: 100%;
+      background: transparent; text-align: left; font-family: inherit;
+    }
+    .sg-item:hover, .sg-item.focused { background: var(--card-hover); }
+    .sg-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .sg-icon {
+      width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .65rem; font-weight: 700; color: var(--text-3); overflow: hidden;
+    }
+    .sg-icon img { width: 100%; height: 100%; border-radius: 7px; display: block; }
+    .sg-text { flex: 1; min-width: 0; }
+    .sg-label {
+      font-size: .82rem; font-weight: 500; color: var(--text-1);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sg-label mark {
+      background: rgba(99,102,241,.25); color: var(--accent-light);
+      border-radius: 3px; padding: 0 1px;
+    }
+    .sg-sub { font-size: .7rem; color: var(--text-3); margin-top: 1px; }
+    .sg-divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+    .sg-empty { padding: 14px; font-size: .8rem; color: var(--text-3); text-align: center; }
 
     /* ── Page wrapper ── */
     .page {
@@ -310,7 +354,9 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
       </svg>
-      <input id="searchInput" type="search" placeholder="Search resources…" autocomplete="off" oninput="onSearch()" />
+      <input id="searchInput" type="search" placeholder="Search resources…" autocomplete="off"
+        oninput="onSearch()" onkeydown="onKey(event)" onfocus="showSuggestions()" />
+      <div class="suggestion-box" id="suggBox"></div>
     </div>
   </header>
 
@@ -592,8 +638,146 @@
     document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('active'));
   }
 
+  /* ── Suggestion dropdown ── */
+  let focusedIdx = -1;
+  let currentSuggestions = [];
+
+  function highlight(text, q) {
+    if (!q) return text;
+    const idx = text.toLowerCase().indexOf(q.toLowerCase());
+    if (idx === -1) return text;
+    return text.slice(0, idx) + '<mark>' + text.slice(idx, idx + q.length) + '</mark>' + text.slice(idx + q.length);
+  }
+
+  function buildSuggestions(q) {
+    const ql = q.toLowerCase().trim();
+    if (!ql) return [];
+    const results = [];
+
+    // Topic matches
+    Object.entries(TOPICS).forEach(([id, topic]) => {
+      if (topic.title.toLowerCase().includes(ql)) {
+        results.push({ kind: 'topic', id, label: topic.title, sub: '5 resources', color: topic.color });
+      }
+    });
+
+    // Resource title matches
+    Object.entries(TOPICS).forEach(([id, topic]) => {
+      topic.resources.forEach(r => {
+        if (r.title.toLowerCase().includes(ql)) {
+          results.push({ kind: 'resource', label: r.title, sub: topic.title, color: topic.color, fav: r.fav, icon: r.icon, site: r.site });
+        }
+      });
+    });
+
+    return results.slice(0, 8);
+  }
+
+  function renderSuggestions(q) {
+    const box = document.getElementById('suggBox');
+    currentSuggestions = buildSuggestions(q);
+    focusedIdx = -1;
+
+    if (!q.trim() || currentSuggestions.length === 0) {
+      box.classList.remove('visible');
+      box.innerHTML = '';
+      return;
+    }
+
+    const topicItems = currentSuggestions.filter(s => s.kind === 'topic');
+    const resItems   = currentSuggestions.filter(s => s.kind === 'resource');
+
+    let html = '';
+
+    if (topicItems.length) {
+      html += `<div class="sg-group-label">Topics</div>`;
+      topicItems.forEach((s, i) => {
+        const globalIdx = currentSuggestions.indexOf(s);
+        html += `<button class="sg-item" data-idx="${globalIdx}" onmousedown="pickSuggestion(${globalIdx})">
+          <span class="sg-dot" style="background:${s.color}"></span>
+          <div class="sg-text">
+            <div class="sg-label">${highlight(s.label, q)}</div>
+            <div class="sg-sub">${s.sub}</div>
+          </div>
+        </button>`;
+      });
+    }
+
+    if (topicItems.length && resItems.length) html += `<hr class="sg-divider">`;
+
+    if (resItems.length) {
+      html += `<div class="sg-group-label">Resources</div>`;
+      resItems.forEach(s => {
+        const globalIdx = currentSuggestions.indexOf(s);
+        const faviconInner = s.fav
+          ? `<img src="${s.fav}" alt="" onerror="this.style.display='none'">`
+          : (s.icon || (s.site||'?')[0].toUpperCase());
+        html += `<button class="sg-item" data-idx="${globalIdx}" onmousedown="pickSuggestion(${globalIdx})">
+          <div class="sg-icon">${faviconInner}</div>
+          <div class="sg-text">
+            <div class="sg-label">${highlight(s.label, q)}</div>
+            <div class="sg-sub" style="color:${s.color}">${s.sub}</div>
+          </div>
+        </button>`;
+      });
+    }
+
+    box.innerHTML = html;
+    box.classList.add('visible');
+  }
+
+  function showSuggestions() {
+    const q = document.getElementById('searchInput').value;
+    if (q.trim()) renderSuggestions(q);
+  }
+
+  function hideSuggestions() {
+    document.getElementById('suggBox').classList.remove('visible');
+    focusedIdx = -1;
+  }
+
+  function pickSuggestion(idx) {
+    const s = currentSuggestions[idx];
+    if (!s) return;
+    document.getElementById('searchInput').value = s.label;
+    hideSuggestions();
+    onSearch();
+  }
+
+  function onKey(e) {
+    const box = document.getElementById('suggBox');
+    const items = box.querySelectorAll('.sg-item');
+    if (!box.classList.contains('visible') || !items.length) {
+      if (e.key === 'Escape') { hideSuggestions(); }
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      focusedIdx = Math.min(focusedIdx + 1, items.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      focusedIdx = Math.max(focusedIdx - 1, -1);
+    } else if (e.key === 'Enter' && focusedIdx >= 0) {
+      e.preventDefault();
+      pickSuggestion(parseInt(items[focusedIdx].dataset.idx));
+      return;
+    } else if (e.key === 'Escape') {
+      hideSuggestions(); return;
+    }
+    items.forEach((el, i) => el.classList.toggle('focused', i === focusedIdx));
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('mousedown', e => {
+    if (!document.getElementById('suggBox').contains(e.target) &&
+        e.target.id !== 'searchInput') {
+      hideSuggestions();
+    }
+  });
+
   function onSearch() {
     const q = document.getElementById('searchInput').value.trim();
+    renderSuggestions(document.getElementById('searchInput').value);
 
     if (!q) {
       // Cleared — restore previous topic panel or close
