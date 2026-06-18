@@ -6,35 +6,24 @@
   <title>Data Literacy Toolkit — DTO</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
-    /* ── Tokens ── */
     :root {
       --bg:           #09090b;
       --surface:      #111116;
       --card:         #141418;
-      --card-hover:   #1a1a22;
+      --card-hover:   #1c1c24;
       --border:       rgba(255,255,255,0.07);
-      --border-hover: rgba(255,255,255,0.14);
+      --border-hover: rgba(255,255,255,0.15);
       --text-1:       #f4f4f5;
       --text-2:       #a1a1aa;
       --text-3:       #52525b;
       --accent:       #6366f1;
       --accent-light: #818cf8;
-
-      --cat-stats:   #6366f1;
-      --cat-viz:     #06b6d4;
-      --cat-code:    #22c55e;
-      --cat-bi:      #f59e0b;
-      --cat-sql:     #f43f5e;
-
-      --sidebar-w: 240px;
-      --header-h:  72px;
+      --header-h:     72px;
     }
 
-    /* ── Base ── */
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
@@ -42,1183 +31,578 @@
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-    }
-
-    /* ── Dot-grid background ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
-      background-size: 28px 28px;
-    }
-
-    /* ── Top header ── */
-    .topbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      height: var(--header-h);
-      background: rgba(9,9,11,0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center;
-      padding: 0 28px; gap: 20px;
-    }
-
-    .brand {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none; flex-shrink: 0;
-    }
-    .brand-sep { color: var(--text-3); font-weight: 300; font-size: 1.1rem; margin: 0 2px; }
-
-    .topbar-title {
-      font-size: .85rem; font-weight: 500; color: var(--text-2);
-    }
-
-    .topbar-search {
-      margin-left: auto; position: relative; width: 260px;
-    }
-    .topbar-search svg {
-      position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-      color: var(--text-3); pointer-events: none;
-    }
-    #searchInput {
-      width: 100%; height: 36px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0 12px 0 34px;
-      font-family: inherit; font-size: .825rem; color: var(--text-1);
-      outline: none; transition: border-color .15s;
-    }
-    #searchInput::placeholder { color: var(--text-3); }
-    #searchInput:focus { border-color: rgba(99,102,241,0.5); }
-
-    .topbar-back {
-      display: flex; align-items: center; gap: 5px;
-      color: var(--text-3); text-decoration: none; font-size: .8rem; font-weight: 500;
-      padding: 6px 12px; border-radius: 7px; border: 1px solid var(--border);
-      transition: all .15s; flex-shrink: 0;
-    }
-    .topbar-back:hover { color: var(--text-1); border-color: var(--border-hover); background: var(--card); }
-
-    /* ── App shell ── */
-    .shell {
-      position: relative; z-index: 1;
-      display: flex;
-      padding-top: var(--header-h);
       min-height: 100vh;
     }
 
-    /* ── Sidebar ── */
-    .sidebar {
-      width: var(--sidebar-w);
-      flex-shrink: 0;
-      position: fixed;
-      top: var(--header-h);
-      left: 0;
-      bottom: 0;
-      overflow-y: auto;
-      border-right: 1px solid var(--border);
-      background: var(--bg);
-      padding: 28px 0;
-      scrollbar-width: none;
-    }
-    .sidebar::-webkit-scrollbar { display: none; }
-
-    .sidebar-section { margin-bottom: 8px; }
-    .sidebar-label {
-      padding: 4px 20px 8px;
-      font-size: .68rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase;
-      color: var(--text-3);
-    }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 20px;
-      text-decoration: none;
-      font-size: .83rem; font-weight: 500; color: var(--text-2);
-      border-radius: 0;
-      cursor: pointer;
-      transition: color .15s, background .15s;
-      position: relative;
-      border: none; background: transparent; width: 100%; text-align: left; font-family: inherit;
-    }
-    .nav-item:hover { color: var(--text-1); background: rgba(255,255,255,0.04); }
-    .nav-item.active { color: var(--text-1); background: rgba(99,102,241,0.08); }
-    .nav-item.active::before {
-      content: ''; position: absolute; left: 0; top: 4px; bottom: 4px;
-      width: 2px; border-radius: 0 2px 2px 0; background: var(--accent);
-    }
-    .nav-dot {
-      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
-    }
-    .nav-count {
-      margin-left: auto; font-size: .72rem; font-weight: 500;
-      color: var(--text-3); background: var(--surface);
-      border: 1px solid var(--border); border-radius: 5px;
-      padding: 1px 6px;
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
 
-    .sidebar-divider {
-      border: none; border-top: 1px solid var(--border); margin: 12px 20px;
+    /* ── Topbar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--header-h);
+      background: rgba(9,9,11,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 40px;
     }
 
-    .sidebar-filters { padding: 0 12px; }
-    .filter-chip {
-      display: flex; align-items: center; gap: 7px;
-      width: 100%; padding: 7px 10px;
-      background: transparent; border: none;
-      font-family: inherit; font-size: .8rem; font-weight: 500; color: var(--text-2);
-      border-radius: 7px; cursor: pointer; transition: all .15s; text-align: left;
-    }
-    .filter-chip:hover { color: var(--text-1); background: rgba(255,255,255,0.04); }
-    .filter-chip.active { color: var(--text-1); background: rgba(99,102,241,0.1); }
-    .filter-chip-icon {
-      width: 22px; height: 22px; border-radius: 5px;
-      display: flex; align-items: center; justify-content: center; font-size: .75rem;
-      background: var(--surface);
+    .brand { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    .brand img { height: 52px; width: auto; display: block; object-fit: contain; }
+
+    .topbar-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+
+    .topbar-title {
+      font-size: .88rem; font-weight: 600; color: var(--text-2);
+      letter-spacing: -.01em; white-space: nowrap;
     }
 
-    /* ── Main content ── */
-    .main {
-      flex: 1;
-      margin-left: var(--sidebar-w);
-      padding: 56px 56px 100px;
-      max-width: 1060px;
+    .topbar-search {
+      margin-left: auto; position: relative; width: 280px; flex-shrink: 0;
+    }
+    .topbar-search svg {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text-3); pointer-events: none;
+    }
+    #searchInput {
+      width: 100%; height: 38px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 9px;
+      padding: 0 14px 0 36px; font-family: inherit; font-size: .83rem; color: var(--text-1);
+      outline: none; transition: border-color .15s, background .15s;
+    }
+    #searchInput::placeholder { color: var(--text-3); }
+    #searchInput:focus { border-color: rgba(99,102,241,.5); background: var(--card); }
+
+    /* ── Page wrapper ── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 1160px; margin: 0 auto;
+      padding: calc(var(--header-h) + 56px) 40px 100px;
     }
 
     /* ── Hero ── */
-    .hero { margin-bottom: 60px; }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
-      color: var(--accent-light); margin-bottom: 18px;
+    .hero { margin-bottom: 64px; }
+    .hero-eye {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--accent-light); margin-bottom: 20px;
     }
-    .hero-eyebrow span {
-      width: 16px; height: 1px; background: var(--accent-light); display: inline-block;
-    }
+    .hero-eye span { width: 18px; height: 1px; background: var(--accent-light); display: block; }
     .hero h1 {
-      font-size: clamp(2rem, 3.5vw, 2.9rem);
-      font-weight: 800; letter-spacing: -.035em; line-height: 1.08;
+      font-size: clamp(2rem, 3.8vw, 3rem);
+      font-weight: 800; letter-spacing: -.04em; line-height: 1.06;
       color: var(--text-1); margin-bottom: 16px;
     }
     .hero h1 em {
       font-style: normal;
-      background: linear-gradient(90deg, var(--accent-light) 0%, #c4b5fd 100%);
+      background: linear-gradient(90deg, var(--accent-light), #c4b5fd);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .hero p {
-      font-size: .975rem; color: var(--text-2); max-width: 540px; line-height: 1.7;
+    .hero p { font-size: .95rem; color: var(--text-2); max-width: 500px; line-height: 1.75; }
+
+    /* ── Topic grid ── */
+    .topics-grid {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      justify-content: center;
+      margin-bottom: 24px;
     }
 
-    /* ── Stats bar ── */
-    .stats-bar {
-      display: flex; gap: 0;
-      border: 1px solid var(--border); border-radius: 12px;
-      overflow: hidden; margin-bottom: 52px; background: var(--card);
+    .topic-card {
+      flex: 1 1 300px; max-width: 360px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 28px 28px 24px;
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: border-color .25s, background .25s, transform .2s, box-shadow .25s;
+      display: flex; flex-direction: column; gap: 14px;
+      user-select: none;
     }
-    .stat-item {
-      flex: 1; padding: 18px 24px;
-      border-right: 1px solid var(--border);
+    .topic-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: 18px;
+      background: radial-gradient(circle at top left, var(--tc, #6366f1), transparent 65%);
+      opacity: 0; transition: opacity .3s;
     }
-    .stat-item:last-child { border-right: none; }
-    .stat-num {
-      font-size: 1.5rem; font-weight: 800; letter-spacing: -.04em;
-      color: var(--text-1); line-height: 1;
-    }
-    .stat-label { font-size: .75rem; color: var(--text-3); font-weight: 500; margin-top: 4px; }
+    .topic-card:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: 0 16px 48px -16px rgba(0,0,0,.5); }
+    .topic-card:hover::before { opacity: .06; }
+    .topic-card.active { border-color: var(--tc, #6366f1); background: var(--card-hover); box-shadow: 0 0 0 1px var(--tc, #6366f1), 0 16px 48px -12px rgba(0,0,0,.5); }
+    .topic-card.active::before { opacity: .1; }
 
-    /* ── Section ── */
-    .section { margin-bottom: 60px; scroll-margin-top: calc(var(--header-h) + 28px); }
+    .topic-icon-wrap {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--tc, #6366f1) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--tc, #6366f1) 30%, transparent);
+      flex-shrink: 0;
+    }
+    .topic-icon-wrap svg { color: var(--tc, #6366f1); }
 
-    .section-header {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 20px; padding-bottom: 16px;
+    .topic-name {
+      font-size: 1.05rem; font-weight: 700; color: var(--text-1);
+      letter-spacing: -.02em; line-height: 1.2;
+    }
+    .topic-desc { font-size: .8rem; color: var(--text-3); line-height: 1.55; flex: 1; }
+    .topic-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 10px; border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+    .topic-count {
+      font-size: .72rem; font-weight: 600; color: var(--text-3);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 3px 9px;
+    }
+    .topic-cta {
+      display: flex; align-items: center; gap: 5px;
+      font-size: .78rem; font-weight: 600; color: var(--tc, #6366f1);
+      transition: gap .2s;
+    }
+    .topic-card:hover .topic-cta { gap: 8px; }
+    .topic-card.active .topic-cta .chevron { transform: rotate(90deg); }
+    .chevron { transition: transform .3s ease; display: inline-block; font-size: .85rem; }
+
+    /* ── Resource panel ── */
+    .panel-wrap {
+      display: grid; grid-template-rows: 0fr;
+      transition: grid-template-rows .4s cubic-bezier(.4,0,.2,1);
+      margin-bottom: 48px;
+    }
+    .panel-wrap.open { grid-template-rows: 1fr; }
+    .panel-inner { overflow: hidden; }
+
+    .panel-body {
+      border: 1px solid var(--border-hover); border-radius: 18px;
+      background: var(--surface); padding: 28px 28px 32px;
+      margin-top: 8px;
+    }
+
+    .panel-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 24px; padding-bottom: 18px;
       border-bottom: 1px solid var(--border);
     }
-    .section-color-bar {
-      width: 3px; height: 20px; border-radius: 2px; flex-shrink: 0;
+    .panel-color-bar { width: 3px; height: 22px; border-radius: 3px; flex-shrink: 0; }
+    .panel-heading { font-size: 1rem; font-weight: 700; color: var(--text-1); letter-spacing: -.015em; }
+    .panel-sub { font-size: .78rem; color: var(--text-3); margin-top: 2px; }
+    .panel-close {
+      margin-left: auto; background: var(--card); border: 1px solid var(--border);
+      color: var(--text-3); width: 30px; height: 30px; border-radius: 8px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; line-height: 1; transition: all .15s;
     }
-    .section-title {
-      font-size: 1rem; font-weight: 700; color: var(--text-1); letter-spacing: -.01em;
-    }
-    .section-sub {
-      font-size: .78rem; color: var(--text-3); font-weight: 400; margin-top: 1px;
-    }
-    .section-badge {
-      margin-left: auto; font-size: .7rem; font-weight: 600;
-      color: var(--text-3); background: var(--surface);
-      border: 1px solid var(--border); border-radius: 5px; padding: 2px 8px;
-      white-space: nowrap;
-    }
+    .panel-close:hover { color: var(--text-1); border-color: var(--border-hover); }
 
-    /* ── Resource grid ── */
-    .grid {
+    .panel-no-results {
+      display: none; text-align: center; padding: 48px 20px;
+      color: var(--text-3); font-size: .85rem;
+    }
+    .panel-no-results.visible { display: block; }
+
+    /* ── Resource cards ── */
+    .resources-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 12px;
     }
 
-    /* ── Resource card ── */
-    .card {
-      position: relative;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      display: flex; flex-direction: column; gap: 12px;
-      transition: border-color .2s, background .2s, transform .2s, box-shadow .2s;
-      overflow: hidden;
+    .res-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 18px 20px; display: flex; flex-direction: column; gap: 10px;
+      transition: border-color .2s, background .2s, transform .18s;
+      position: relative; overflow: hidden;
     }
-    .card::after {
+    .res-card::after {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent 0%, var(--cat-color, #6366f1) 50%, transparent 100%);
+      background: linear-gradient(90deg, transparent, var(--rc, #6366f1), transparent);
       opacity: 0; transition: opacity .25s;
     }
-    .card:hover {
-      border-color: var(--border-hover);
-      background: var(--card-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px -12px rgba(0,0,0,0.5);
-    }
-    .card:hover::after { opacity: 1; }
+    .res-card:hover { border-color: var(--border-hover); background: var(--card-hover); transform: translateY(-2px); }
+    .res-card:hover::after { opacity: 1; }
+    .res-card.hidden { display: none; }
 
-    .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .card-chips { display: flex; gap: 5px; flex-wrap: wrap; }
-
+    .res-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .res-chips { display: flex; gap: 5px; flex-wrap: wrap; }
     .chip {
-      font-size: .65rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+      font-size: .62rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
       padding: 3px 8px; border-radius: 5px; white-space: nowrap; border: 1px solid transparent;
     }
-    .chip-video       { background: rgba(239,68,68,.1);   color: #fca5a5; border-color: rgba(239,68,68,.18); }
-    .chip-article     { background: rgba(59,130,246,.1);  color: #93c5fd; border-color: rgba(59,130,246,.18); }
-    .chip-course      { background: rgba(168,85,247,.1);  color: #d8b4fe; border-color: rgba(168,85,247,.18); }
-    .chip-interactive { background: rgba(16,185,129,.1);  color: #6ee7b7; border-color: rgba(16,185,129,.18); }
-    .chip-reference   { background: rgba(245,158,11,.1);  color: #fcd34d; border-color: rgba(245,158,11,.18); }
-    .chip-game        { background: rgba(236,72,153,.1);  color: #f9a8d4; border-color: rgba(236,72,153,.18); }
-    .chip-free        { background: transparent; color: var(--text-3); border-color: var(--border); }
-    .chip-freemium    { background: transparent; color: var(--text-3); border-color: var(--border); }
+    .chip-video       { background:rgba(239,68,68,.1);   color:#fca5a5; border-color:rgba(239,68,68,.2); }
+    .chip-article     { background:rgba(59,130,246,.1);  color:#93c5fd; border-color:rgba(59,130,246,.2); }
+    .chip-course      { background:rgba(168,85,247,.1);  color:#d8b4fe; border-color:rgba(168,85,247,.2); }
+    .chip-interactive { background:rgba(16,185,129,.1);  color:#6ee7b7; border-color:rgba(16,185,129,.2); }
+    .chip-reference   { background:rgba(245,158,11,.1);  color:#fcd34d; border-color:rgba(245,158,11,.2); }
+    .chip-game        { background:rgba(236,72,153,.1);  color:#f9a8d4; border-color:rgba(236,72,153,.2); }
+    .chip-free        { background:transparent; color:var(--text-3); border-color:var(--border); }
+    .chip-freemium    { background:transparent; color:var(--text-3); border-color:var(--border); }
 
-    .card-favicon {
-      width: 28px; height: 28px; border-radius: 7px;
+    .res-favicon {
+      width: 26px; height: 26px; border-radius: 7px;
       background: var(--surface); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       font-size: .7rem; font-weight: 700; color: var(--text-3); flex-shrink: 0; overflow: hidden;
     }
-    .card-favicon img { width: 100%; height: 100%; border-radius: 7px; display: block; }
+    .res-favicon img { width: 100%; height: 100%; border-radius: 7px; display: block; }
 
-    .card-title {
-      font-size: .9rem; font-weight: 600; color: var(--text-1);
-      line-height: 1.35; letter-spacing: -.01em;
-    }
-    .card-desc {
-      font-size: .8rem; color: var(--text-2); line-height: 1.65; flex: 1;
-    }
-    .card-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px; padding-top: 4px;
-    }
-    .card-site {
-      font-size: .73rem; color: var(--text-3); font-weight: 500;
+    .res-title { font-size: .875rem; font-weight: 600; color: var(--text-1); line-height: 1.3; letter-spacing: -.01em; }
+    .res-desc  { font-size: .78rem; color: var(--text-2); line-height: 1.65; flex: 1; }
+    .res-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .res-site {
+      font-size: .7rem; color: var(--text-3); font-weight: 500;
       display: flex; align-items: center; gap: 4px;
     }
-    .card-site svg { opacity: .4; }
-    .card-cta {
+    .res-cta {
       display: inline-flex; align-items: center; gap: 4px;
-      color: var(--accent-light); font-size: .78rem; font-weight: 600;
-      text-decoration: none; border-radius: 6px;
-      padding: 5px 10px; background: rgba(99,102,241,0.1);
-      border: 1px solid rgba(99,102,241,0.2);
-      transition: all .15s; white-space: nowrap;
+      color: var(--accent-light); font-size: .76rem; font-weight: 600;
+      text-decoration: none; border-radius: 7px; padding: 5px 10px;
+      background: rgba(99,102,241,.1); border: 1px solid rgba(99,102,241,.2);
+      transition: all .15s; white-space: nowrap; flex-shrink: 0;
     }
-    .card-cta:hover { background: rgba(99,102,241,0.18); border-color: rgba(99,102,241,0.4); color: white; }
+    .res-cta:hover { background: rgba(99,102,241,.2); border-color: rgba(99,102,241,.45); color: white; }
 
-    /* ── Empty state ── */
-    .empty {
-      display: none; grid-column: 1/-1;
-      text-align: center; padding: 60px 20px; color: var(--text-3);
+    /* ── Stats row ── */
+    .stats-row {
+      display: flex; gap: 0; border: 1px solid var(--border); border-radius: 14px;
+      overflow: hidden; background: var(--card); margin-bottom: 56px;
     }
-    .empty.visible { display: block; }
-    .empty-icon { font-size: 2rem; margin-bottom: 12px; }
-    .empty-title { font-size: .95rem; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
-    .empty-sub { font-size: .82rem; }
-
-    /* ── Hidden states ── */
-    .card.hidden { display: none; }
-    .section.hidden { display: none; }
+    .stat { flex: 1; padding: 18px 24px; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-n { font-size: 1.6rem; font-weight: 800; letter-spacing: -.05em; color: var(--text-1); }
+    .stat-l { font-size: .72rem; color: var(--text-3); font-weight: 500; margin-top: 3px; }
 
     /* ── Footer ── */
-    .footer {
-      margin-left: var(--sidebar-w);
-      padding: 24px 56px;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    footer {
+      border-top: 1px solid var(--border); padding: 24px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; position: relative; z-index: 1;
     }
-    .footer-text { font-size: .78rem; color: var(--text-3); }
-    .footer-link { color: var(--text-2); text-decoration: none; }
-    .footer-link:hover { color: var(--text-1); }
+    footer span { font-size: .77rem; color: var(--text-3); }
+    footer a { color: var(--text-2); text-decoration: none; }
+    footer a:hover { color: var(--text-1); }
 
-    /* ── Mobile ── */
-    .mobile-toggle {
-      display: none; position: fixed; bottom: 20px; right: 20px; z-index: 200;
-      width: 44px; height: 44px; border-radius: 50%;
-      background: var(--accent); border: none; color: white;
-      align-items: center; justify-content: center; cursor: pointer;
-      box-shadow: 0 4px 20px rgba(99,102,241,.4);
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .topbar { padding: 0 20px; }
+      .page { padding: calc(var(--header-h) + 36px) 20px 80px; }
+      .hero h1 { font-size: 1.8rem; }
+      .topic-card { max-width: 100%; }
+      .stats-row { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      footer { padding: 20px; }
+      .topbar-search { width: 180px; }
     }
-
-    @media (max-width: 768px) {
-      :root { --sidebar-w: 0px; }
-      .sidebar {
-        transform: translateX(-100%); width: 240px;
-        transition: transform .25s ease;
-        z-index: 150; background: #0d0d12;
-      }
-      .sidebar.open { transform: translateX(0); box-shadow: 20px 0 40px rgba(0,0,0,0.5); }
-      .main { margin-left: 0; padding: 32px 20px 80px; }
-      .footer { margin-left: 0; padding: 20px; }
-      .topbar-search { display: none; }
-      .mobile-toggle { display: flex; }
-      .stats-bar { flex-direction: column; }
-      .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
-      .stat-item:last-child { border-bottom: none; }
-      .topbar { padding: 0 16px; }
-    }
-
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
   </style>
 </head>
 <body>
 
-  <!-- ── Top bar ── -->
+  <!-- ── Topbar ── -->
   <header class="topbar">
-    <a href="index.html" class="brand">
-      <img src="dto-logo.png" alt="DTO" style="height:52px;width:auto;display:block;object-fit:contain;" />
+    <a href="#" class="brand">
+      <img src="dto-logo.png" alt="DTO" />
     </a>
-    <span class="brand-sep">/</span>
+    <div class="topbar-divider"></div>
     <span class="topbar-title">Data Literacy Toolkit</span>
-
     <div class="topbar-search">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
       </svg>
-      <input id="searchInput" type="search" placeholder="Search resources…" autocomplete="off" oninput="filterAll()" />
+      <input id="searchInput" type="search" placeholder="Search resources…" autocomplete="off" oninput="onSearch()" />
     </div>
-
-    <a href="index.html" class="topbar-back">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Home
-    </a>
   </header>
 
-  <div class="shell">
+  <div class="page">
 
-    <!-- ── Sidebar ── -->
-    <nav class="sidebar" id="sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">Topics</div>
-        <a class="nav-item active" onclick="scrollTo('hero'); setActive(this)" href="#hero">
-          <span class="nav-dot" style="background:#52525b"></span>
-          Overview
-        </a>
-        <a class="nav-item" onclick="scrollTo('stats'); setActive(this)" href="#stats">
-          <span class="nav-dot" style="background:var(--cat-stats)"></span>
-          Statistics Basics
-          <span class="nav-count">5</span>
-        </a>
-        <a class="nav-item" onclick="scrollTo('viz'); setActive(this)" href="#viz">
-          <span class="nav-dot" style="background:var(--cat-viz)"></span>
-          Visualisation
-          <span class="nav-count">5</span>
-        </a>
-        <a class="nav-item" onclick="scrollTo('code'); setActive(this)" href="#code">
-          <span class="nav-dot" style="background:var(--cat-code)"></span>
-          Coding Basics
-          <span class="nav-count">5</span>
-        </a>
-        <a class="nav-item" onclick="scrollTo('bi'); setActive(this)" href="#bi">
-          <span class="nav-dot" style="background:var(--cat-bi)"></span>
-          Tableau & Power BI
-          <span class="nav-count">5</span>
-        </a>
-        <a class="nav-item" onclick="scrollTo('sql'); setActive(this)" href="#sql">
-          <span class="nav-dot" style="background:var(--cat-sql)"></span>
-          SQL
-          <span class="nav-count">5</span>
-        </a>
-      </div>
+    <!-- ── Hero ── -->
+    <div class="hero">
+      <div class="hero-eye"><span></span> DTO · Data Literacy Toolkit</div>
+      <h1>Your go-to guide for <em>data literacy skills.</em></h1>
+      <p>25 curated, beginner-friendly resources across five core topics — from trusted, verified sources. Free or free-to-audit wherever possible.</p>
+    </div>
 
-      <hr class="sidebar-divider" />
+    <!-- ── Stats ── -->
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n">25</div><div class="stat-l">Total resources</div></div>
+      <div class="stat"><div class="stat-n">5</div><div class="stat-l">Topic areas</div></div>
+      <div class="stat"><div class="stat-n">20</div><div class="stat-l">Free resources</div></div>
+      <div class="stat"><div class="stat-n">Jun 2026</div><div class="stat-l">Last reviewed</div></div>
+    </div>
 
-      <div class="sidebar-section">
-        <div class="sidebar-label">Filter by type</div>
-        <div class="sidebar-filters">
-          <button class="filter-chip active" onclick="setFilter('all', this)">
-            <span class="filter-chip-icon">⊞</span> All resources
-          </button>
-          <button class="filter-chip" onclick="setFilter('video', this)">
-            <span class="filter-chip-icon">▶</span> Videos
-          </button>
-          <button class="filter-chip" onclick="setFilter('course', this)">
-            <span class="filter-chip-icon">🎓</span> Courses
-          </button>
-          <button class="filter-chip" onclick="setFilter('interactive', this)">
-            <span class="filter-chip-icon">⚡</span> Interactive
-          </button>
-          <button class="filter-chip" onclick="setFilter('article', this)">
-            <span class="filter-chip-icon">📄</span> Articles & Sites
-          </button>
-          <button class="filter-chip" onclick="setFilter('free', this)">
-            <span class="filter-chip-icon">✓</span> Free only
-          </button>
+    <!-- ── Topic cards ── -->
+    <div class="topics-grid" id="topicsGrid">
+
+      <div class="topic-card" data-id="stats" style="--tc:#6366f1" onclick="toggle('stats')">
+        <div class="topic-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+          </svg>
         </div>
-      </div>
-    </nav>
-
-    <!-- ── Main ── -->
-    <main class="main">
-
-      <!-- Hero -->
-      <section id="hero" style="scroll-margin-top: calc(var(--header-h) + 28px); margin-bottom: 48px;">
-        <div class="hero-eyebrow"><span></span> DTO · Data Literacy Toolkit</div>
-        <h1 class="hero" style="margin-bottom:0">
-          Your go-to guide for <em>data literacy skills.</em>
-        </h1>
-        <p style="font-size:.95rem;color:var(--text-2);margin-top:14px;max-width:520px;line-height:1.7;">
-          25 hand-picked resources across five core topics — all from verified, trusted sources. Free or free-to-audit wherever possible.
-        </p>
-      </section>
-
-      <!-- Stats bar -->
-      <div class="stats-bar" style="margin-bottom:52px">
-        <div class="stat-item">
-          <div class="stat-num">25</div>
-          <div class="stat-label">Total resources</div>
+        <div>
+          <div class="topic-name">Statistics Basics</div>
+          <div class="topic-desc" style="margin-top:6px">Core concepts, probability & inference — no prior maths required.</div>
         </div>
-        <div class="stat-item">
-          <div class="stat-num">5</div>
-          <div class="stat-label">Topic areas</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">20</div>
-          <div class="stat-label">Free resources</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">Jun 2026</div>
-          <div class="stat-label">Last reviewed</div>
+        <div class="topic-footer">
+          <span class="topic-count">5 resources</span>
+          <span class="topic-cta">Explore <span class="chevron">›</span></span>
         </div>
       </div>
 
-      <!-- ══════════════════════════════
-           SECTION 1: STATISTICS
-      ══════════════════════════════ -->
-      <section class="section" id="stats" data-category="stats">
-        <div class="section-header">
-          <div class="section-color-bar" style="background:var(--cat-stats)"></div>
-          <div>
-            <div class="section-title">Statistics for Beginners</div>
-            <div class="section-sub">Core concepts, probability & inference — no prior maths required</div>
-          </div>
-          <span class="section-badge">5 resources</span>
+      <div class="topic-card" data-id="viz" style="--tc:#06b6d4" onclick="toggle('viz')">
+        <div class="topic-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 8 13 13 9 9 2 16"/><line x1="2" y1="20" x2="22" y2="20"/>
+          </svg>
         </div>
-        <div class="grid">
-
-          <div class="card" style="--cat-color:var(--cat-stats)" data-tags="course free" data-name="khan academy statistics probability math">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-course">Course</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.khanacademy.org/favicon.ico" alt="" onerror="this.parentNode.innerHTML='KA'"></div>
-            </div>
-            <div class="card-title">Khan Academy — Statistics & Probability</div>
-            <div class="card-desc">Structured, self-paced lessons from basic descriptive stats through distributions, hypothesis testing, and regression. Includes practice exercises with immediate feedback.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                khanacademy.org
-              </div>
-              <a class="card-cta" href="https://www.khanacademy.org/math/statistics-probability" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-stats)" data-tags="video free" data-name="statquest josh starmer youtube statistics machine learning">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-video">Video</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.youtube.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='YT'"></div>
-            </div>
-            <div class="card-title">StatQuest with Josh Starmer</div>
-            <div class="card-desc">The clearest stats YouTube channel around. Josh breaks down p-values, distributions, PCA, and more — with minimal jargon and memorable explanations. A top recommendation for beginners.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                youtube.com
-              </div>
-              <a class="card-cta" href="https://www.youtube.com/@statquest/playlists" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-stats)" data-tags="interactive free" data-name="seeing theory brown university visual probability interactive">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-interactive">Interactive</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon" style="font-size:.8rem">🎨</div>
-            </div>
-            <div class="card-title">Seeing Theory</div>
-            <div class="card-desc">A beautifully animated introduction to probability and statistics from Brown University. Concepts like distributions and Bayesian inference come alive through interactive visual simulations.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                seeing-theory.brown.edu
-              </div>
-              <a class="card-cta" href="https://seeing-theory.brown.edu/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-stats)" data-tags="article free" data-name="statistics how to reference formulas definitions">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-reference">Reference</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon" style="font-size:.8rem">📖</div>
-            </div>
-            <div class="card-title">Statistics How To</div>
-            <div class="card-desc">A comprehensive reference site with plain-English explanations of hundreds of statistical concepts, formulas, and tests. Bookmark it for quick look-ups during projects.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                statisticshowto.com
-              </div>
-              <a class="card-cta" href="https://www.statisticshowto.com/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-stats)" data-tags="course freemium" data-name="coursera statistics python michigan university specialisation">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-course">Course</span>
-                <span class="chip chip-freemium">Free to audit</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.coursera.org/favicon.ico" alt="" onerror="this.parentNode.innerHTML='Co'"></div>
-            </div>
-            <div class="card-title">Statistics with Python — U of Michigan</div>
-            <div class="card-desc">A 5-course Coursera specialisation covering statistical inference, model fitting, and applied stats in Python. Audit free; pay only for the certificate. Solid for building a structured foundation.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                coursera.org
-              </div>
-              <a class="card-cta" href="https://www.coursera.org/specializations/statistics-with-python" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
+        <div>
+          <div class="topic-name">Visualisation Techniques</div>
+          <div class="topic-desc" style="margin-top:6px">Chart selection, design principles & storytelling with data.</div>
         </div>
-      </section>
-
-      <!-- ══════════════════════════════
-           SECTION 2: VISUALISATION
-      ══════════════════════════════ -->
-      <section class="section" id="viz" data-category="viz">
-        <div class="section-header">
-          <div class="section-color-bar" style="background:var(--cat-viz)"></div>
-          <div>
-            <div class="section-title">Better Visualisation Techniques</div>
-            <div class="section-sub">Chart selection, design principles & storytelling with data</div>
-          </div>
-          <span class="section-badge">5 resources</span>
+        <div class="topic-footer">
+          <span class="topic-count">5 resources</span>
+          <span class="topic-cta">Explore <span class="chevron">›</span></span>
         </div>
-        <div class="grid">
+      </div>
 
-          <div class="card" style="--cat-color:var(--cat-viz)" data-tags="interactive free" data-name="data to viz chart picker decision tree type selector">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-interactive">Interactive</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon" style="font-size:.8rem">🗺️</div>
-            </div>
-            <div class="card-title">From Data to Viz — Chart Decision Tree</div>
-            <div class="card-desc">An interactive decision tree that recommends the right chart type based on your data structure. Shows pitfalls for each chart and provides code examples in both R and Python.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                data-to-viz.com
-              </div>
-              <a class="card-cta" href="https://www.data-to-viz.com/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-viz)" data-tags="article free" data-name="storytelling with data cole nussbaumer knaflic blog makeover chart">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-article">Blog</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon" style="font-size:.8rem">📚</div>
-            </div>
-            <div class="card-title">Storytelling with Data</div>
-            <div class="card-desc">The definitive resource for dataviz best practices. Blog posts, before/after chart makeovers, and community challenges teach you to build charts that actually communicate effectively.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                storytellingwithdata.com
-              </div>
-              <a class="card-cta" href="https://www.storytellingwithdata.com/blog" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-viz)" data-tags="article free" data-name="datawrapper academy chart design colour guide tutorial">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-article">Learning Portal</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.datawrapper.de/favicon.ico" alt="" onerror="this.parentNode.innerHTML='DW'"></div>
-            </div>
-            <div class="card-title">Datawrapper Academy</div>
-            <div class="card-desc">Practical guides on chart design, colour theory, and data communication. Written for non-designers — clear, opinionated, and full of examples you can replicate immediately.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                academy.datawrapper.de
-              </div>
-              <a class="card-cta" href="https://academy.datawrapper.de/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-viz)" data-tags="article free" data-name="pudding visual essays data journalism interactive stories">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-article">Inspiration</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon" style="font-size:.8rem">🍮</div>
-            </div>
-            <div class="card-title">The Pudding — Visual Essays</div>
-            <div class="card-desc">Award-winning data journalism using creative, interactive visualisations. Excellent for inspiration and understanding how effective data stories are constructed beyond the standard bar chart.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                pudding.cool
-              </div>
-              <a class="card-cta" href="https://pudding.cool/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-viz)" data-tags="article free" data-name="financial times visual vocabulary FT chart classification reference">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-reference">Reference</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon" style="font-size:.8rem">📰</div>
-            </div>
-            <div class="card-title">FT Visual Vocabulary</div>
-            <div class="card-desc">A one-page chart classification poster from the Financial Times data team. Categorises chart types by what relationship they show — deviation, ranking, distribution, flow, and more. Perfect desk reference.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                github.com/ft-interactive
-              </div>
-              <a class="card-cta" href="https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
+      <div class="topic-card" data-id="code" style="--tc:#22c55e" onclick="toggle('code')">
+        <div class="topic-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+          </svg>
         </div>
-      </section>
-
-      <!-- ══════════════════════════════
-           SECTION 3: CODING
-      ══════════════════════════════ -->
-      <section class="section" id="code" data-category="code">
-        <div class="section-header">
-          <div class="section-color-bar" style="background:var(--cat-code)"></div>
-          <div>
-            <div class="section-title">Hands-On Coding Basics</div>
-            <div class="section-sub">Python & data analysis fundamentals with real practice exercises</div>
-          </div>
-          <span class="section-badge">5 resources</span>
+        <div>
+          <div class="topic-name">Coding Basics</div>
+          <div class="topic-desc" style="margin-top:6px">Python & data analysis fundamentals with real practice exercises.</div>
         </div>
-        <div class="grid">
-
-          <div class="card" style="--cat-color:var(--cat-code)" data-tags="interactive free" data-name="kaggle learn python pandas data analysis cloud notebook">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-interactive">Interactive</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.kaggle.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='Kg'"></div>
-            </div>
-            <div class="card-title">Kaggle Learn — Python & Pandas</div>
-            <div class="card-desc">Short courses (2–4 hours) with exercises you run in free cloud notebooks. Covers Python basics, Pandas data manipulation, data cleaning, and visualisation. Zero setup required.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                kaggle.com/learn
-              </div>
-              <a class="card-cta" href="https://www.kaggle.com/learn" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-code)" data-tags="course free" data-name="freecodecamp data analysis python certification numpy pandas matplotlib">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-course">Course</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.freecodecamp.org/favicon.ico" alt="" onerror="this.parentNode.innerHTML='fCC'"></div>
-            </div>
-            <div class="card-title">freeCodeCamp — Data Analysis with Python</div>
-            <div class="card-desc">A full certification covering NumPy, Pandas, Matplotlib, and Seaborn through project-based learning. 100% free with a shareable certificate. Genuinely one of the best free Python data courses.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                freecodecamp.org
-              </div>
-              <a class="card-cta" href="https://www.freecodecamp.org/learn/data-analysis-with-python/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-code)" data-tags="video free" data-name="corey schafer python pandas tutorial youtube beginner">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-video">Video</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.youtube.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='YT'"></div>
-            </div>
-            <div class="card-title">Corey Schafer — Python & Pandas Tutorials</div>
-            <div class="card-desc">Highly-rated YouTube series covering Python from scratch and Pandas in depth. Praised for being clear and detailed. Watch the dedicated Pandas playlist for data analysis specifically.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                youtube.com/@coreyms
-              </div>
-              <a class="card-cta" href="https://www.youtube.com/@coreyms/playlists" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-code)" data-tags="interactive freemium" data-name="datacamp python intro data science browser exercises feedback">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-interactive">Interactive</span>
-                <span class="chip chip-freemium">Free intro</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.datacamp.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='DC'"></div>
-            </div>
-            <div class="card-title">DataCamp — Intro to Python for Data Science</div>
-            <div class="card-desc">Browser-based coding exercises with instant feedback. First chapters of every course are free. Covers Python, Pandas, and visualisation in a curriculum designed specifically for data work.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                datacamp.com
-              </div>
-              <a class="card-cta" href="https://www.datacamp.com/courses/intro-to-python-for-data-science" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-code)" data-tags="article free" data-name="real python tutorials articles data science matplotlib">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-article">Tutorials</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://realpython.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='RP'"></div>
-            </div>
-            <div class="card-title">Real Python — Data Science Tutorials</div>
-            <div class="card-desc">In-depth, peer-reviewed Python articles. Strong collection covering Pandas, Matplotlib, working with files and APIs. Good for going deeper once you've completed the basics.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                realpython.com
-              </div>
-              <a class="card-cta" href="https://realpython.com/tutorials/data-science/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
+        <div class="topic-footer">
+          <span class="topic-count">5 resources</span>
+          <span class="topic-cta">Explore <span class="chevron">›</span></span>
         </div>
-      </section>
+      </div>
 
-      <!-- ══════════════════════════════
-           SECTION 4: BI TOOLS
-      ══════════════════════════════ -->
-      <section class="section" id="bi" data-category="bi">
-        <div class="section-header">
-          <div class="section-color-bar" style="background:var(--cat-bi)"></div>
-          <div>
-            <div class="section-title">Tableau & Power BI Basics</div>
-            <div class="section-sub">Drag-and-drop dashboards and business intelligence tools</div>
-          </div>
-          <span class="section-badge">5 resources</span>
+      <div class="topic-card" data-id="bi" style="--tc:#f59e0b" onclick="toggle('bi')">
+        <div class="topic-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
         </div>
-        <div class="grid">
-
-          <div class="card" style="--cat-color:var(--cat-bi)" data-tags="course free" data-name="tableau official training elearning free videos certification">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-course">Official Training</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.tableau.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='Tab'"></div>
-            </div>
-            <div class="card-title">Tableau Free Training Videos</div>
-            <div class="card-desc">Official e-learning from Tableau: getting started, connecting to data, building charts, and creating dashboards. Beginner to advanced tracks. Download Tableau Public (free) to follow along.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                tableau.com
-              </div>
-              <a class="card-cta" href="https://www.tableau.com/learn/training/elearning" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-bi)" data-tags="course free" data-name="microsoft learn power bi fundamentals official desktop query DAX">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-course">Official Course</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://learn.microsoft.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='MS'"></div>
-            </div>
-            <div class="card-title">Microsoft Learn — Power BI Fundamentals</div>
-            <div class="card-desc">Official Microsoft learning path covering Power BI Desktop, Power Query, DAX basics, and publishing reports. Structured modules with sandboxed exercises. Leads directly into the PL-300 exam prep path.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                learn.microsoft.com
-              </div>
-              <a class="card-cta" href="https://learn.microsoft.com/en-us/training/paths/get-started-power-bi/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-bi)" data-tags="video free" data-name="guy in a cube power bi youtube channel tips DAX features">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-video">Video</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.youtube.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='YT'"></div>
-            </div>
-            <div class="card-title">Guy in a Cube — Power BI YouTube</div>
-            <div class="card-desc">The most popular Power BI YouTube channel (600k+ subscribers), run by two Microsoft MVPs. Weekly videos on tips, DAX, new features, and best practices. The fastest way to get up to speed in Power BI.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                youtube.com/@GuyInACube
-              </div>
-              <a class="card-cta" href="https://www.youtube.com/@GuyInACube" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-bi)" data-tags="video free" data-name="tableau tim youtube tutorial calculated fields LOD dashboard design">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-video">Video</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.youtube.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='YT'"></div>
-            </div>
-            <div class="card-title">Tableau Tim — Tableau YouTube Tutorials</div>
-            <div class="card-desc">Beginner-friendly Tableau tutorials from a Tableau Ambassador. Covers chart types, calculated fields, LOD expressions, and dashboard design. Ideal for building a portfolio on Tableau Public.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                youtube.com/@TableauTim
-              </div>
-              <a class="card-cta" href="https://www.youtube.com/@TableauTim" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-bi)" data-tags="interactive free" data-name="tableau public community gallery portfolio dashboard download reverse engineer">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-interactive">Gallery</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://public.tableau.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='TP'"></div>
-            </div>
-            <div class="card-title">Tableau Public — Community Gallery</div>
-            <div class="card-desc">Browse thousands of real Tableau dashboards. Click "Download" on any viz to see exactly how it was built. Also where you publish your own work to build a free, shareable data portfolio.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                public.tableau.com
-              </div>
-              <a class="card-cta" href="https://public.tableau.com/app/discover" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
+        <div>
+          <div class="topic-name">Tableau & Power BI</div>
+          <div class="topic-desc" style="margin-top:6px">Drag-and-drop dashboards and business intelligence tools.</div>
         </div>
-      </section>
-
-      <!-- ══════════════════════════════
-           SECTION 5: SQL
-      ══════════════════════════════ -->
-      <section class="section" id="sql" data-category="sql">
-        <div class="section-header">
-          <div class="section-color-bar" style="background:var(--cat-sql)"></div>
-          <div>
-            <div class="section-title">Simple SQL Coding</div>
-            <div class="section-sub">Querying databases — SELECT, filter, join, and aggregate</div>
-          </div>
-          <span class="section-badge">5 resources</span>
+        <div class="topic-footer">
+          <span class="topic-count">5 resources</span>
+          <span class="topic-cta">Explore <span class="chevron">›</span></span>
         </div>
-        <div class="grid">
+      </div>
 
-          <div class="card" style="--cat-color:var(--cat-sql)" data-tags="interactive free" data-name="sqlzoo interactive exercises practice queries browser">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-interactive">Interactive</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon" style="font-size:.8rem">🦓</div>
-            </div>
-            <div class="card-title">SQLZoo</div>
-            <div class="card-desc">Write real SQL queries against real datasets directly in the browser. Starts with simple SELECT statements and progresses to complex JOINs and subqueries. Widely recommended for absolute beginners.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                sqlzoo.net
-              </div>
-              <a class="card-cta" href="https://sqlzoo.net/wiki/SQL_Tutorial" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-sql)" data-tags="article free" data-name="mode sql tutorial analytics aggregation joins window functions analyst">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-article">Tutorial</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon" style="font-size:.8rem">📊</div>
-            </div>
-            <div class="card-title">Mode SQL Tutorial</div>
-            <div class="card-desc">A structured SQL curriculum written specifically for data analysts — teaches you to think in SQL, not just the syntax. Covers aggregation, filtering, JOINs, and window functions with an analytics mindset.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                mode.com/sql-tutorial
-              </div>
-              <a class="card-cta" href="https://mode.com/sql-tutorial/introduction-to-sql/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-sql)" data-tags="interactive free" data-name="w3schools sql try it editor reference syntax WHERE GROUP BY JOIN">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-interactive">Reference + Editor</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.w3schools.com/favicon.ico" alt="" onerror="this.parentNode.innerHTML='W3'"></div>
-            </div>
-            <div class="card-title">W3Schools SQL</div>
-            <div class="card-desc">A quick-start SQL reference with a live "Try it yourself" editor on every page. Great for looking up syntax fast. Covers SELECT, WHERE, GROUP BY, ORDER BY, JOINs, and more — all in one place.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                w3schools.com/sql
-              </div>
-              <a class="card-cta" href="https://www.w3schools.com/sql/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-sql)" data-tags="course free" data-name="freecodecamp relational database sql certification postgresql projects">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-course">Course</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon"><img src="https://www.freecodecamp.org/favicon.ico" alt="" onerror="this.parentNode.innerHTML='fCC'"></div>
-            </div>
-            <div class="card-title">freeCodeCamp — Relational Database Certification</div>
-            <div class="card-desc">Hands-on SQL projects in a browser-based environment. Learn SQL and PostgreSQL through real exercises — create tables, insert data, and write complex queries. Comes with a free certificate.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                freecodecamp.org
-              </div>
-              <a class="card-cta" href="https://www.freecodecamp.org/learn/relational-database/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="card" style="--cat-color:var(--cat-sql)" data-tags="interactive free" data-name="sql murder mystery game fun learning queries detective solve">
-            <div class="card-meta">
-              <div class="card-chips">
-                <span class="chip chip-game">Game</span>
-                <span class="chip chip-free">Free</span>
-              </div>
-              <div class="card-favicon" style="font-size:.8rem">🕵️</div>
-            </div>
-            <div class="card-title">SQL Murder Mystery</div>
-            <div class="card-desc">Solve a murder mystery using SQL. A game-based way to practise writing queries — you use SELECT, JOIN, WHERE, and GROUP BY to track down a killer. Makes learning SQL genuinely fun.</div>
-            <div class="card-footer">
-              <div class="card-site">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                mystery.knightlab.com
-              </div>
-              <a class="card-cta" href="https://mystery.knightlab.com/" target="_blank" rel="noopener">
-                Open <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-              </a>
-            </div>
-          </div>
-
+      <div class="topic-card" data-id="sql" style="--tc:#f43f5e" onclick="toggle('sql')">
+        <div class="topic-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+          </svg>
         </div>
-      </section>
+        <div>
+          <div class="topic-name">SQL Coding</div>
+          <div class="topic-desc" style="margin-top:6px">Querying databases — SELECT, filter, join, and aggregate data.</div>
+        </div>
+        <div class="topic-footer">
+          <span class="topic-count">5 resources</span>
+          <span class="topic-cta">Explore <span class="chevron">›</span></span>
+        </div>
+      </div>
 
-    </main>
+    </div>
+
+    <!-- ── Resource panel ── -->
+    <div class="panel-wrap" id="panelWrap">
+      <div class="panel-inner">
+        <div class="panel-body" id="panelBody">
+          <div class="panel-header" id="panelHeader">
+            <div class="panel-color-bar" id="panelBar"></div>
+            <div>
+              <div class="panel-heading" id="panelTitle"></div>
+              <div class="panel-sub" id="panelSub"></div>
+            </div>
+            <button class="panel-close" onclick="closePanel()">✕</button>
+          </div>
+          <div class="panel-no-results" id="panelEmpty">No results match your search.</div>
+          <div class="resources-grid" id="resourcesGrid"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <span class="footer-text">DTO Data Literacy Toolkit · All links verified June 2026 · All resources free or free-to-audit</span>
-    <span class="footer-text">Suggest a resource: <a href="mailto:shaniceteo@gmail.com" class="footer-link">shaniceteo@gmail.com</a></span>
+  <footer>
+    <span>DTO Data Literacy Toolkit · All links verified June 2026 · All resources free or free-to-audit</span>
+    <span>Suggest a resource: <a href="mailto:shaniceteo@gmail.com">shaniceteo@gmail.com</a></span>
   </footer>
 
-  <!-- Mobile sidebar toggle -->
-  <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation" onclick="toggleSidebar()">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-    </svg>
-  </button>
-
   <script>
-    /* ── Mobile sidebar ── */
-    function toggleSidebar(){
-      document.getElementById('sidebar').classList.toggle('open');
+  const GLOBE_SVG = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity=".4"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`;
+  const EXT_SVG  = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>`;
+
+  const TOPICS = {
+    stats: {
+      title: 'Statistics Basics',
+      sub:   'Core concepts, probability & inference — no prior maths required',
+      color: '#6366f1',
+      resources: [
+        { title:'Khan Academy — Statistics & Probability', site:'khanacademy.org', fav:'https://www.khanacademy.org/favicon.ico', desc:'Structured, self-paced lessons from descriptive stats through hypothesis testing and regression. Includes practice exercises with immediate feedback.', type:'Course', cost:'Free', url:'https://www.khanacademy.org/math/statistics-probability' },
+        { title:'StatQuest with Josh Starmer', site:'youtube.com', fav:'https://www.youtube.com/favicon.ico', desc:'The clearest stats YouTube channel around. Josh breaks down p-values, distributions, and PCA with minimal jargon. A top recommendation for beginners.', type:'Video', cost:'Free', url:'https://www.youtube.com/@statquest/playlists' },
+        { title:'Seeing Theory — Visual Statistics', site:'seeing-theory.brown.edu', fav:'', desc:'A beautifully animated introduction to probability and statistics from Brown University. Concepts come alive through interactive visual simulations.', type:'Interactive', cost:'Free', url:'https://seeing-theory.brown.edu/', icon:'🎨' },
+        { title:'Statistics How To', site:'statisticshowto.com', fav:'', desc:'A comprehensive reference site with plain-English explanations of hundreds of statistical concepts, formulas, and tests. Perfect to bookmark for quick look-ups.', type:'Reference', cost:'Free', url:'https://www.statisticshowto.com/', icon:'📖' },
+        { title:'Statistics with Python — U of Michigan', site:'coursera.org', fav:'https://www.coursera.org/favicon.ico', desc:'A 5-course Coursera specialisation covering statistical inference and applied stats in Python. Audit free; pay only for the certificate.', type:'Course', cost:'Free to audit', url:'https://www.coursera.org/specializations/statistics-with-python' },
+      ]
+    },
+    viz: {
+      title: 'Visualisation Techniques',
+      sub:   'Chart selection, design principles & storytelling with data',
+      color: '#06b6d4',
+      resources: [
+        { title:'From Data to Viz — Chart Decision Tree', site:'data-to-viz.com', fav:'', desc:'An interactive decision tree that recommends the right chart type for your data. Shows pitfalls for each chart and provides code examples in R and Python.', type:'Interactive', cost:'Free', url:'https://www.data-to-viz.com/', icon:'🗺️' },
+        { title:'Storytelling with Data', site:'storytellingwithdata.com', fav:'', desc:'The definitive resource for dataviz best practices. Blog posts, before/after chart makeovers, and community challenges teach you to build charts that communicate.', type:'Article', cost:'Free', url:'https://www.storytellingwithdata.com/blog', icon:'📚' },
+        { title:'Datawrapper Academy', site:'academy.datawrapper.de', fav:'https://www.datawrapper.de/favicon.ico', desc:'Practical guides on chart design, colour theory, and data communication. Written for non-designers — clear, opinionated, and full of replicable examples.', type:'Article', cost:'Free', url:'https://academy.datawrapper.de/' },
+        { title:'The Pudding — Visual Essays', site:'pudding.cool', fav:'', desc:'Award-winning data journalism using creative, interactive visualisations. Excellent for inspiration and understanding how effective data stories are constructed.', type:'Article', cost:'Free', url:'https://pudding.cool/', icon:'🍮' },
+        { title:'FT Visual Vocabulary', site:'github.com/ft-interactive', fav:'', desc:'A one-page chart classification from the Financial Times data team. Categorises chart types by relationship — deviation, ranking, distribution, flow, and more.', type:'Reference', cost:'Free', url:'https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary', icon:'📰' },
+      ]
+    },
+    code: {
+      title: 'Coding Basics',
+      sub:   'Python & data analysis fundamentals with real practice exercises',
+      color: '#22c55e',
+      resources: [
+        { title:'Kaggle Learn — Python & Pandas', site:'kaggle.com/learn', fav:'https://www.kaggle.com/favicon.ico', desc:'Short courses (2–4 hours) with exercises you run in free cloud notebooks. Covers Python basics, Pandas, data cleaning, and visualisation. Zero setup required.', type:'Interactive', cost:'Free', url:'https://www.kaggle.com/learn' },
+        { title:'freeCodeCamp — Data Analysis with Python', site:'freecodecamp.org', fav:'https://www.freecodecamp.org/favicon.ico', desc:'A full certification covering NumPy, Pandas, Matplotlib, and Seaborn through project-based learning. 100% free with a shareable certificate on completion.', type:'Course', cost:'Free', url:'https://www.freecodecamp.org/learn/data-analysis-with-python/' },
+        { title:'Corey Schafer — Python & Pandas Tutorials', site:'youtube.com/@coreyms', fav:'https://www.youtube.com/favicon.ico', desc:'Highly-rated YouTube tutorials covering Python from scratch and Pandas in depth. Praised for being clear and detailed. Watch the Pandas playlist for data work.', type:'Video', cost:'Free', url:'https://www.youtube.com/@coreyms/playlists' },
+        { title:'DataCamp — Intro to Python for Data Science', site:'datacamp.com', fav:'https://www.datacamp.com/favicon.ico', desc:'Browser-based coding exercises with instant feedback. First chapters of every course are free. Covers Python, Pandas, and visualisation in a data-focused curriculum.', type:'Interactive', cost:'Free intro', url:'https://www.datacamp.com/courses/intro-to-python-for-data-science' },
+        { title:'Real Python — Data Science Tutorials', site:'realpython.com', fav:'https://realpython.com/favicon.ico', desc:'In-depth, peer-reviewed Python articles with a strong collection on Pandas, Matplotlib, and working with files and APIs. Good for going deeper after the basics.', type:'Article', cost:'Free', url:'https://realpython.com/tutorials/data-science/' },
+      ]
+    },
+    bi: {
+      title: 'Tableau & Power BI',
+      sub:   'Drag-and-drop dashboards and business intelligence tools',
+      color: '#f59e0b',
+      resources: [
+        { title:'Tableau Free Training Videos', site:'tableau.com', fav:'https://www.tableau.com/favicon.ico', desc:'Official e-learning from Tableau covering getting started, connecting to data, building charts, and creating dashboards. Beginner to advanced tracks included.', type:'Course', cost:'Free', url:'https://www.tableau.com/learn/training/elearning' },
+        { title:'Microsoft Learn — Power BI Fundamentals', site:'learn.microsoft.com', fav:'https://learn.microsoft.com/favicon.ico', desc:'Official Microsoft learning path covering Power BI Desktop, Power Query, DAX basics, and publishing reports. Structured modules with sandboxed exercises.', type:'Course', cost:'Free', url:'https://learn.microsoft.com/en-us/training/paths/get-started-power-bi/' },
+        { title:'Guy in a Cube — Power BI YouTube', site:'youtube.com/@GuyInACube', fav:'https://www.youtube.com/favicon.ico', desc:'The most popular Power BI YouTube channel (600k+ subscribers), run by two Microsoft MVPs. Weekly videos on tips, DAX, new features, and best practices.', type:'Video', cost:'Free', url:'https://www.youtube.com/@GuyInACube' },
+        { title:'Tableau Tim — Tableau YouTube Tutorials', site:'youtube.com/@TableauTim', fav:'https://www.youtube.com/favicon.ico', desc:'Beginner-friendly Tableau tutorials from a Tableau Ambassador. Covers chart types, calculated fields, LOD expressions, and dashboard design.', type:'Video', cost:'Free', url:'https://www.youtube.com/@TableauTim' },
+        { title:'Tableau Public — Community Gallery', site:'public.tableau.com', fav:'https://public.tableau.com/favicon.ico', desc:'Browse thousands of real Tableau dashboards. Download any viz to see how it was built. Also where you publish your own work to build a free portfolio.', type:'Interactive', cost:'Free', url:'https://public.tableau.com/app/discover' },
+      ]
+    },
+    sql: {
+      title: 'SQL Coding',
+      sub:   'Querying databases — SELECT, filter, join, and aggregate',
+      color: '#f43f5e',
+      resources: [
+        { title:'SQLZoo — Interactive SQL Exercises', site:'sqlzoo.net', fav:'', desc:'Write real SQL queries against real datasets directly in the browser. Starts with simple SELECT statements and progresses to complex JOINs and subqueries.', type:'Interactive', cost:'Free', url:'https://sqlzoo.net/wiki/SQL_Tutorial', icon:'🦓' },
+        { title:'Mode SQL Tutorial', site:'mode.com/sql-tutorial', fav:'', desc:'A structured SQL curriculum written for data analysts — teaches you to think in SQL, not just the syntax. Covers aggregation, JOINs, and window functions.', type:'Article', cost:'Free', url:'https://mode.com/sql-tutorial/introduction-to-sql/', icon:'📊' },
+        { title:'W3Schools SQL', site:'w3schools.com/sql', fav:'https://www.w3schools.com/favicon.ico', desc:'A quick-start SQL reference with a live "Try it yourself" editor on every page. Great for looking up syntax fast — SELECT, WHERE, GROUP BY, ORDER BY, JOINs.', type:'Interactive', cost:'Free', url:'https://www.w3schools.com/sql/' },
+        { title:'freeCodeCamp — Relational Database Cert.', site:'freecodecamp.org', fav:'https://www.freecodecamp.org/favicon.ico', desc:'Hands-on SQL projects in a browser-based environment. Learn SQL and PostgreSQL through real exercises — create tables, insert data, and write complex queries.', type:'Course', cost:'Free', url:'https://www.freecodecamp.org/learn/relational-database/' },
+        { title:'SQL Murder Mystery', site:'mystery.knightlab.com', fav:'', desc:'Solve a murder mystery using SQL. Use SELECT, JOIN, WHERE, and GROUP BY to track down a killer. The most fun way to learn SQL fundamentals.', type:'Game', cost:'Free', url:'https://mystery.knightlab.com/', icon:'🕵️' },
+      ]
     }
-    document.addEventListener('click', e=>{
-      const sb = document.getElementById('sidebar');
-      if(sb.classList.contains('open') && !sb.contains(e.target) && e.target.id !== 'mobileToggle'){
-        sb.classList.remove('open');
-      }
+  };
+
+  let openId = null;
+
+  function chipClass(type) {
+    const map = { Course:'course', Video:'video', Interactive:'interactive', Article:'article', Reference:'reference', Game:'game' };
+    return 'chip chip-' + (map[type] || 'article');
+  }
+  function costClass(cost) {
+    if (cost === 'Free') return 'chip chip-free';
+    return 'chip chip-freemium';
+  }
+
+  function buildCards(topicId, query) {
+    const topic = TOPICS[topicId];
+    const q = (query || '').toLowerCase().trim();
+    let html = '';
+    let count = 0;
+
+    topic.resources.forEach(r => {
+      const searchable = (r.title + r.site + r.desc).toLowerCase();
+      if (q && !searchable.includes(q)) return;
+      count++;
+      const favicon = r.fav
+        ? `<img src="${r.fav}" alt="" onerror="this.style.display='none';this.parentNode.textContent='${(r.site||'')[0]?.toUpperCase()||'?'}';">`
+        : (r.icon || (r.site||'?')[0].toUpperCase());
+      html += `
+        <div class="res-card" style="--rc:${topic.color}">
+          <div class="res-meta">
+            <div class="res-chips">
+              <span class="${chipClass(r.type)}">${r.type}</span>
+              <span class="${costClass(r.cost)}">${r.cost}</span>
+            </div>
+            <div class="res-favicon">${r.fav ? `<img src="${r.fav}" alt="" onerror="this.style.display='none'">` : (r.icon || (r.site||'?')[0].toUpperCase())}</div>
+          </div>
+          <div class="res-title">${r.title}</div>
+          <div class="res-desc">${r.desc}</div>
+          <div class="res-footer">
+            <div class="res-site">${GLOBE_SVG} ${r.site}</div>
+            <a class="res-cta" href="${r.url}" target="_blank" rel="noopener">Open ${EXT_SVG}</a>
+          </div>
+        </div>`;
     });
 
-    /* ── Smooth section scroll ── */
-    function scrollTo(id){
-      const el = document.getElementById(id);
-      if(el) el.scrollIntoView({ behavior: 'smooth' });
-      if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+    return { html, count };
+  }
+
+  function openPanel(topicId) {
+    const topic = TOPICS[topicId];
+    const q = document.getElementById('searchInput').value;
+    const { html, count } = buildCards(topicId, q);
+
+    document.getElementById('panelBar').style.background = topic.color;
+    document.getElementById('panelTitle').textContent = topic.title;
+    document.getElementById('panelSub').textContent = topic.sub;
+    document.getElementById('resourcesGrid').innerHTML = html;
+
+    const empty = document.getElementById('panelEmpty');
+    empty.classList.toggle('visible', count === 0);
+
+    document.getElementById('panelWrap').classList.add('open');
+
+    // Scroll panel into view after transition starts
+    setTimeout(() => {
+      document.getElementById('panelWrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 120);
+  }
+
+  function toggle(id) {
+    const cards = document.querySelectorAll('.topic-card');
+
+    if (openId === id) {
+      // Close
+      openId = null;
+      document.getElementById('panelWrap').classList.remove('open');
+      cards.forEach(c => c.classList.remove('active'));
+    } else {
+      // Open (possibly switching)
+      openId = id;
+      cards.forEach(c => c.classList.toggle('active', c.dataset.id === id));
+      openPanel(id);
     }
+  }
 
-    /* ── Active nav on scroll ── */
-    const sections = ['hero','stats','viz','code','bi','sql'];
-    const navLinks = document.querySelectorAll('.nav-item');
-    const observer = new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          navLinks.forEach(l=>l.classList.remove('active'));
-          const link = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
-          if(link) link.classList.add('active');
-        }
-      });
-    }, { rootMargin: '-20% 0px -70% 0px' });
-    sections.forEach(id=>{ const el=document.getElementById(id); if(el) observer.observe(el); });
+  function closePanel() {
+    openId = null;
+    document.getElementById('panelWrap').classList.remove('open');
+    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('active'));
+  }
 
-    function setActive(el){
-      navLinks.forEach(l=>l.classList.remove('active'));
-      el.classList.add('active');
-    }
-
-    /* ── Filter + Search ── */
-    let activeFilter = 'all';
-
-    function setFilter(f, btn){
-      activeFilter = f;
-      document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      filterAll();
-    }
-
-    function filterAll(){
-      const q = document.getElementById('searchInput').value.toLowerCase().trim();
-
-      document.querySelectorAll('.card').forEach(card=>{
-        const name = card.dataset.name || '';
-        const tags = card.dataset.tags || '';
-        const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
-        const desc  = card.querySelector('.card-desc')?.textContent.toLowerCase()  || '';
-
-        const matchSearch = !q || name.includes(q) || title.includes(q) || desc.includes(q);
-        let matchFilter = true;
-        if(activeFilter !== 'all'){
-          matchFilter = activeFilter === 'free'
-            ? tags.includes('free') && !tags.includes('freemium')
-            : tags.includes(activeFilter);
-        }
-
-        card.classList.toggle('hidden', !(matchSearch && matchFilter));
-      });
-
-      /* Hide empty sections, show empty state if all hidden */
-      document.querySelectorAll('.section').forEach(sec=>{
-        const visible = sec.querySelectorAll('.card:not(.hidden)').length;
-        sec.classList.toggle('hidden', visible === 0);
-        let empty = sec.querySelector('.empty');
-        if(!empty){
-          empty = document.createElement('div');
-          empty.className = 'empty';
-          empty.innerHTML = '<div class="empty-icon">🔍</div><div class="empty-title">No results</div><div class="empty-sub">Try a different search term or filter.</div>';
-          sec.querySelector('.grid').appendChild(empty);
-        }
-        empty.classList.toggle('visible', visible === 0);
-      });
-    }
+  function onSearch() {
+    if (openId) openPanel(openId);
+  }
   </script>
+
 </body>
 </html>
