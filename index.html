@@ -373,6 +373,25 @@
     <!-- ── Topic cards ── -->
     <div class="topics-grid" id="topicsGrid">
 
+      <div class="topic-card" data-id="excel" style="--tc:#10b981" onclick="toggle('excel')">
+        <div class="topic-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="3" y1="15" x2="21" y2="15"/>
+            <line x1="9" y1="3" x2="9" y2="21"/>
+          </svg>
+        </div>
+        <div>
+          <div class="topic-name">Excel Basics</div>
+          <div class="topic-desc" style="margin-top:6px">Formulas, pivot tables, charts & essential spreadsheet skills.</div>
+        </div>
+        <div class="topic-footer">
+          <span class="topic-count">5 resources</span>
+          <span class="topic-cta">Explore <span class="chevron">›</span></span>
+        </div>
+      </div>
+
       <div class="topic-card" data-id="stats" style="--tc:#6366f1" onclick="toggle('stats')">
         <div class="topic-icon-wrap">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -488,6 +507,18 @@
   const EXT_SVG  = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>`;
 
   const TOPICS = {
+    excel: {
+      title: 'Excel Basics',
+      sub:   'Formulas, pivot tables, charts & essential spreadsheet skills',
+      color: '#10b981',
+      resources: [
+        { title:'Microsoft Support — Excel Video Training', site:'support.microsoft.com', fav:'https://support.microsoft.com/favicon.ico', desc:'Official Microsoft video training covering Excel fundamentals, formulas, functions, charts, and pivot tables. Organised by skill level — start from scratch or jump to what you need.', type:'Video', cost:'Free', url:'https://support.microsoft.com/en-us/office/excel-video-training-9bc05390-e94c-46af-a5b3-d7c22f6990bb' },
+        { title:'Microsoft Learn — Excel Fundamentals', site:'learn.microsoft.com', fav:'https://learn.microsoft.com/favicon.ico', desc:'Official Microsoft learning path covering data entry, formulas, formatting, and charts in Excel. Structured modules with built-in exercises — no software installation needed to follow along.', type:'Course', cost:'Free', url:'https://learn.microsoft.com/en-us/training/paths/excel-fundamentals/' },
+        { title:'GCFGlobal — Excel Tutorial', site:'edu.gcfglobal.org', fav:'https://edu.gcfglobal.org/favicon.ico', desc:'A thorough beginner tutorial from Goodwill Community Foundation covering the full Excel workflow — cells, formulas, functions, charts, and pivot tables. Clear, illustrated, and completely free.', type:'Interactive', cost:'Free', url:'https://edu.gcfglobal.org/en/excel/' },
+        { title:'ExcelJet — Formula & Function Reference', site:'exceljet.net', fav:'https://exceljet.net/favicon.ico', desc:'The most trusted independent Excel formula reference. Over 500 formula examples with plain-English explanations, covering VLOOKUP, IF, SUMIF, INDEX/MATCH, and much more. Used daily by professionals.', type:'Reference', cost:'Free', url:'https://exceljet.net/formulas' },
+        { title:'Excel Skills for Business — Macquarie University', site:'coursera.org', fav:'https://www.coursera.org/favicon.ico', desc:'A highly-rated 4-course Coursera specialisation from Macquarie University. Covers essentials through to advanced Excel — pivot tables, VLOOKUP, dashboards, and data analysis. Free to audit.', type:'Course', cost:'Free to audit', url:'https://www.coursera.org/specializations/excel' },
+      ]
+    },
     stats: {
       title: 'Statistics Basics',
       sub:   'Core concepts, probability & inference — no prior maths required',
