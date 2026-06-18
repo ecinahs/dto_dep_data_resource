@@ -21,7 +21,7 @@
       --text-3:       #52525b;
       --accent:       #6366f1;
       --accent-light: #818cf8;
-      --header-h:     72px;
+      --header-h:     100px;
     }
 
     body {
@@ -54,12 +54,12 @@
     }
 
     .brand { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
-    .brand img { height: 52px; width: auto; display: block; object-fit: contain; }
+    .brand img { height: 68px; width: auto; display: block; object-fit: contain; }
 
     .topbar-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
 
     .topbar-title {
-      font-size: .88rem; font-weight: 600; color: var(--text-2);
+      font-size: 1rem; font-weight: 600; color: var(--text-2);
       letter-spacing: -.01em; white-space: nowrap;
     }
 
@@ -67,7 +67,7 @@
       margin-left: auto; position: relative; width: 280px; flex-shrink: 0;
     }
     .topbar-search > svg {
-      position: absolute; left: 12px; top: 19px;
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
       color: var(--text-3); pointer-events: none; z-index: 1;
     }
     #searchInput {
