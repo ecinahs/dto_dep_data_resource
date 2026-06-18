@@ -593,7 +593,57 @@
   }
 
   function onSearch() {
-    if (openId) openPanel(openId);
+    const q = document.getElementById('searchInput').value.trim();
+
+    if (!q) {
+      // Cleared — restore previous topic panel or close
+      if (openId) {
+        openPanel(openId);
+      } else {
+        closePanel();
+      }
+      return;
+    }
+
+    // Search mode: scan all topics, deactivate card highlights
+    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('active'));
+
+    const ql = q.toLowerCase();
+    let html = '';
+    let total = 0;
+
+    Object.entries(TOPICS).forEach(([id, topic]) => {
+      topic.resources.forEach(r => {
+        if (!(r.title + r.site + r.desc).toLowerCase().includes(ql)) return;
+        total++;
+        html += `
+          <div class="res-card" style="--rc:${topic.color}">
+            <div class="res-meta">
+              <div class="res-chips">
+                <span class="${chipClass(r.type)}">${r.type}</span>
+                <span class="${costClass(r.cost)}">${r.cost}</span>
+                <span class="chip" style="background:color-mix(in srgb,${topic.color} 12%,transparent);color:${topic.color};border-color:color-mix(in srgb,${topic.color} 30%,transparent)">${topic.title}</span>
+              </div>
+              <div class="res-favicon">${r.fav ? `<img src="${r.fav}" alt="" onerror="this.style.display='none'">` : (r.icon || (r.site||'?')[0].toUpperCase())}</div>
+            </div>
+            <div class="res-title">${r.title}</div>
+            <div class="res-desc">${r.desc}</div>
+            <div class="res-footer">
+              <div class="res-site">${GLOBE_SVG} ${r.site}</div>
+              <a class="res-cta" href="${r.url}" target="_blank" rel="noopener">Open ${EXT_SVG}</a>
+            </div>
+          </div>`;
+      });
+    });
+
+    document.getElementById('panelBar').style.background = 'var(--accent)';
+    document.getElementById('panelTitle').textContent = `Results for "${q}"`;
+    document.getElementById('panelSub').textContent = total
+      ? `${total} resource${total !== 1 ? 's' : ''} found across all topics`
+      : '';
+    document.getElementById('resourcesGrid').innerHTML = html;
+    document.getElementById('panelEmpty').classList.toggle('visible', total === 0);
+    document.getElementById('panelWrap').classList.add('open');
   }
   </script>
 
