@@ -373,6 +373,59 @@
     <!-- ── Topic cards ── -->
     <div class="topics-grid" id="topicsGrid">
 
+      <!-- 1. Statistics Basics -->
+      <div class="topic-card" data-id="stats" style="--tc:#6366f1" onclick="toggle('stats')">
+        <div class="topic-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+          </svg>
+        </div>
+        <div>
+          <div class="topic-name">Statistics Basics</div>
+          <div class="topic-desc" style="margin-top:6px">Core concepts, probability & inference — no prior maths required.</div>
+        </div>
+        <div class="topic-footer">
+          <span class="topic-count">5 resources</span>
+          <span class="topic-cta">Explore <span class="chevron">›</span></span>
+        </div>
+      </div>
+
+      <!-- 2. Visualisation Techniques -->
+      <div class="topic-card" data-id="viz" style="--tc:#06b6d4" onclick="toggle('viz')">
+        <div class="topic-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 8 13 13 9 9 2 16"/><line x1="2" y1="20" x2="22" y2="20"/>
+          </svg>
+        </div>
+        <div>
+          <div class="topic-name">Visualisation Techniques</div>
+          <div class="topic-desc" style="margin-top:6px">Chart selection, design principles & storytelling with data.</div>
+        </div>
+        <div class="topic-footer">
+          <span class="topic-count">5 resources</span>
+          <span class="topic-cta">Explore <span class="chevron">›</span></span>
+        </div>
+      </div>
+
+      <!-- 3. Tableau & Power BI -->
+      <div class="topic-card" data-id="bi" style="--tc:#f59e0b" onclick="toggle('bi')">
+        <div class="topic-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </div>
+        <div>
+          <div class="topic-name">Tableau & Power BI</div>
+          <div class="topic-desc" style="margin-top:6px">Drag-and-drop dashboards and business intelligence tools.</div>
+        </div>
+        <div class="topic-footer">
+          <span class="topic-count">5 resources</span>
+          <span class="topic-cta">Explore <span class="chevron">›</span></span>
+        </div>
+      </div>
+
+      <!-- 4. Excel Basics -->
       <div class="topic-card" data-id="excel" style="--tc:#10b981" onclick="toggle('excel')">
         <div class="topic-icon-wrap">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -392,38 +445,7 @@
         </div>
       </div>
 
-      <div class="topic-card" data-id="stats" style="--tc:#6366f1" onclick="toggle('stats')">
-        <div class="topic-icon-wrap">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
-          </svg>
-        </div>
-        <div>
-          <div class="topic-name">Statistics Basics</div>
-          <div class="topic-desc" style="margin-top:6px">Core concepts, probability & inference — no prior maths required.</div>
-        </div>
-        <div class="topic-footer">
-          <span class="topic-count">5 resources</span>
-          <span class="topic-cta">Explore <span class="chevron">›</span></span>
-        </div>
-      </div>
-
-      <div class="topic-card" data-id="viz" style="--tc:#06b6d4" onclick="toggle('viz')">
-        <div class="topic-icon-wrap">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="22 12 18 8 13 13 9 9 2 16"/><line x1="2" y1="20" x2="22" y2="20"/>
-          </svg>
-        </div>
-        <div>
-          <div class="topic-name">Visualisation Techniques</div>
-          <div class="topic-desc" style="margin-top:6px">Chart selection, design principles & storytelling with data.</div>
-        </div>
-        <div class="topic-footer">
-          <span class="topic-count">5 resources</span>
-          <span class="topic-cta">Explore <span class="chevron">›</span></span>
-        </div>
-      </div>
-
+      <!-- 5. Coding Basics -->
       <div class="topic-card" data-id="code" style="--tc:#22c55e" onclick="toggle('code')">
         <div class="topic-icon-wrap">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -440,23 +462,7 @@
         </div>
       </div>
 
-      <div class="topic-card" data-id="bi" style="--tc:#f59e0b" onclick="toggle('bi')">
-        <div class="topic-icon-wrap">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
-          </svg>
-        </div>
-        <div>
-          <div class="topic-name">Tableau & Power BI</div>
-          <div class="topic-desc" style="margin-top:6px">Drag-and-drop dashboards and business intelligence tools.</div>
-        </div>
-        <div class="topic-footer">
-          <span class="topic-count">5 resources</span>
-          <span class="topic-cta">Explore <span class="chevron">›</span></span>
-        </div>
-      </div>
-
+      <!-- 6. SQL Coding -->
       <div class="topic-card" data-id="sql" style="--tc:#f43f5e" onclick="toggle('sql')">
         <div class="topic-icon-wrap">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
